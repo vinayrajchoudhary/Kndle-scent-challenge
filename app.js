@@ -1,6 +1,7 @@
 (() => {
   const cfg = window.KNDLE_CONFIG;
   const db = window.KNDLE_DB;
+  const cloud = window.KNDLE_CLOUD;
   const app = document.getElementById("app");
 
   const state = {
@@ -167,7 +168,10 @@
       slotLabel: state.candle.slotLabel,
       fragrance: state.candle.fragrance,
       answer: state.answer,
-      correct: state.result === "correct"
+      correct: state.result === "correct",
+      cloudSynced: false,
+      cloudSyncedAt: null,
+      lastSyncError: ""
     };
     state.savedPlayId = play.id;
     await db.addPlay(play);
@@ -188,7 +192,7 @@
       </div>`, "Result", false);
 
     document.getElementById("joinButton").onclick = () => go("player");
-    document.getElementById("skipButton").onclick = () => go("final");
+    document.getElementById("skipButton").onclick = async () => { await finalizePlay(); go("final"); };
   }
 
   function renderPlayer() {
@@ -211,20 +215,33 @@
         play.instagram = state.instagram;
         await db.addPlay(play);
       }
+      await finalizePlay();
       go("final");
     };
-    document.getElementById("skipPlayer").onclick = () => go("final");
+    document.getElementById("skipPlayer").onclick = async () => { await finalizePlay(); go("final"); };
+  }
+
+  async function finalizePlay() {
+    const plays = await db.getAllPlays();
+    const play = plays.find(p => p.id === state.savedPlayId);
+    if (!play) return false;
+    play.playerName = state.playerName || play.playerName || "";
+    play.instagram = state.instagram || play.instagram || "";
+    await db.addPlay(play);
+    return cloud ? cloud.syncPlay(play) : false;
   }
 
   async function renderFinal() {
-    const plays = await db.getAllPlays();
-    const recent = [...plays].reverse().filter(p => p.playerName).slice(0, 5);
+    const recent = cloud
+      ? await cloud.getLeaderboard(5)
+      : [...(await db.getAllPlays())].reverse().filter(p => p.correct && p.playerName).slice(0, 5)
+          .map(p => ({ nickname: p.playerName, candle_name: p.fragrance }));
     shell(`
       <div class="content-wrap narrow center">
         <p class="eyebrow">KNDLÉ Scent Detectives</p>
         <h2>${state.playerName ? `Welcome, ${escapeHtml(state.playerName)} ✨` : "Thanks for playing ✨"}</h2>
         <div class="mini-board">
-          ${recent.length ? recent.map(p => `<div><strong>${escapeHtml(p.playerName)}</strong><span>${escapeHtml(p.fragrance)}</span></div>`).join("") : "<p>No named players yet.</p>"}
+          ${recent.length ? recent.map(p => `<div><strong>${escapeHtml(p.nickname)}</strong><span>${escapeHtml(p.candle_name)}</span></div>`).join("") : "<p>No named winners yet.</p>"}
         </div>
         <p class="hint">Returning to the start…</p>
         <button class="ghost" id="playAgain">Play again now</button>
@@ -251,6 +268,7 @@
   async function renderAdmin() {
     const plays = await db.getAllPlays();
     const correct = plays.filter(p => p.correct).length;
+    const pending = plays.filter(p => !p.cloudSynced).length;
     shell(`
       <div class="content-wrap narrow">
         <p class="eyebrow">Admin</p>
@@ -258,8 +276,10 @@
         <div class="stats-grid">
           <div><strong>${plays.length}</strong><span>Total plays</span></div>
           <div><strong>${correct}</strong><span>Correct</span></div>
+          <div><strong>${pending}</strong><span>Pending sync</span></div>
         </div>
         <div class="admin-actions">
+          <button class="primary" id="syncNow">Sync now</button>
           <button class="primary" id="exportJson">Export JSON</button>
           <label class="file-button">Import JSON<input id="importJson" type="file" accept="application/json,.json" /></label>
           <button class="ghost" id="resetAll">Reset all data</button>
@@ -267,6 +287,10 @@
         <p class="hint">Import currently merges records by unique play ID.</p>
       </div>`, "Admin", false);
 
+    document.getElementById("syncNow").onclick = async () => {
+      if (cloud) await cloud.syncPending();
+      renderAdmin();
+    };
     document.getElementById("exportJson").onclick = exportJson;
     document.getElementById("importJson").onchange = importJson;
     document.getElementById("resetAll").onclick = async () => {
@@ -322,5 +346,7 @@
     window.addEventListener("load", () => navigator.serviceWorker.register("service-worker.js").catch(() => {}));
   }
 
+  window.addEventListener("online", () => cloud?.syncPending().catch(() => {}));
+  cloud?.syncPending().catch(() => {});
   render();
 })();
