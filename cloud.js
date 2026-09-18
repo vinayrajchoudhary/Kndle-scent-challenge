@@ -1,6 +1,6 @@
 window.KNDLE_CLOUD = (() => {
   const SUPABASE_URL = "https://iukyljyklgykayolhaax.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_7Iz7DrO8waHv7BJ2bIOcIA_qQLlOsXs";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1a3lsanlrbGd5a2F5b2xoYWF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3MDgzOTgsImV4cCI6MjEwNTI4NDM5OH0.OhvmxhgsC3K17hipUuhmuMzVV26U1QytWvo2v4dHGTA";
   const db = () => window.KNDLE_DB;
 
   function deviceId() {
@@ -18,6 +18,7 @@ window.KNDLE_CLOUD = (() => {
       ...options,
       headers: {
         apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
         "Content-Type": "application/json",
         ...(options.headers || {})
       }
