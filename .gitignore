@@ -1,0 +1,11 @@
+# Customer-data exports belong on your device, never in the website source.
+kndle-scent-game-*.json
+backups/
+exports/
+
+# Local development files
+.DS_Store
+Thumbs.db
+node_modules/
+.env
+.env.*

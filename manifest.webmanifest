@@ -1,0 +1,10 @@
+{
+  "name": "KNDLÉ Scent Challenge",
+  "short_name": "KNDLÉ",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f3ede4",
+  "theme_color": "#f3ede4",
+  "orientation": "landscape",
+  "description": "Offline-first KNDLÉ exhibition scent game"
+}
