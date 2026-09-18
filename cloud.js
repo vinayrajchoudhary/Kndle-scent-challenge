@@ -25,7 +25,7 @@ window.KNDLE_CLOUD = (() => {
     });
     if (!response.ok) {
       const body = await response.text().catch(() => "");
-      const error = new Error(`Supabase ${response.status}: ${body || response.statusText}`);
+      console.error("KNDLÉ Supabase error", response.status, body || response.statusText);\n      const error = new Error(`Supabase ${response.status}: ${body || response.statusText}`);
       error.status = response.status;
       throw error;
     }
@@ -127,5 +127,5 @@ window.KNDLE_CLOUD = (() => {
     }
   }
 
-  return { deviceId, syncPlay, syncPending, getLeaderboard };
+  return { deviceId, syncPlay, syncPending, getLeaderboard, version: "4" };
 })();
