@@ -65,9 +65,9 @@ window.KNDLE_CLOUD = (() => {
   async function insertIgnoringDuplicate(table, row) {
     if (!row) return;
     try {
-      await request(`${table}?on_conflict=play_id`, {
+      await request(table, {
         method: "POST",
-        headers: { Prefer: "resolution=ignore-duplicates,return=minimal" },
+        headers: { Prefer: "return=minimal" },
         body: JSON.stringify(row)
       });
     } catch (err) {
@@ -128,5 +128,5 @@ window.KNDLE_CLOUD = (() => {
     }
   }
 
-  return { deviceId, syncPlay, syncPending, getLeaderboard, version: "5" };
+  return { deviceId, syncPlay, syncPending, getLeaderboard, version: "6" };
 })();
