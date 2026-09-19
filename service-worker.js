@@ -1,4 +1,4 @@
-const CACHE = "kndle-scent-game-v11";
+const CACHE = "kndle-scent-game-v12";
 const ASSETS = [
   "./",
   "./index.html",
@@ -7,7 +7,7 @@ const ASSETS = [
   "./db.js",
   "./cloud.js?v=6",
   "./transition.js",
-  "./app.js?v=11",
+  "./app.js?v=12",
   "./manifest.webmanifest"
 ];
 
