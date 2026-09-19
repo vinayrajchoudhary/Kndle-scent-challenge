@@ -6,6 +6,7 @@ const ASSETS = [
   "./config.js?v=9",
   "./db.js",
   "./cloud.js?v=6",
+  "./transition.js",
   "./app.js?v=8",
   "./manifest.webmanifest"
 ];
