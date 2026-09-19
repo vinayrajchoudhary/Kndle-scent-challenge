@@ -117,19 +117,100 @@
     });
   }
 
+
+  function renderVesselThumb(candle, large = false) {
+    const cls = large ? "vessel-svg large" : "vessel-svg";
+    const n = candle.slot;
+    const common = `class="${cls}" viewBox="0 0 100 100" role="img" aria-label="Candle ${n} thumbnail"`;
+
+    switch (candle.vessel) {
+      case "amber-lidded":
+        return `<svg ${common}>
+          <defs><linearGradient id="amber-${n}" x1="0" x2="1"><stop stop-color="#8e5b2a"/><stop offset=".5" stop-color="#d89962"/><stop offset="1" stop-color="#7a4b24"/></linearGradient></defs>
+          <path d="M25 35 Q18 50 24 72 Q30 86 50 88 Q70 86 76 72 Q82 50 75 35 Z" fill="url(#amber-${n})"/>
+          <ellipse cx="50" cy="36" rx="27" ry="9" fill="#9b744e"/><rect x="26" y="29" width="48" height="8" rx="4" fill="#9b744e"/>
+          <path d="M42 26 q7-8 14 0 l6 3 -5 4 -6-3 -7 4 -7-4z" fill="#8c6a3d"/>
+        </svg>`;
+      case "green-pedestal":
+        return `<svg ${common}>
+          <defs><linearGradient id="ped-${n}" x1="0" x2="1"><stop stop-color="#374b2d"/><stop offset=".5" stop-color="#8c9a5c"/><stop offset="1" stop-color="#2f3c27"/></linearGradient></defs>
+          <path d="M18 22 Q20 54 50 61 Q80 54 82 22 Z" fill="url(#ped-${n})"/>
+          <ellipse cx="50" cy="22" rx="32" ry="9" fill="#d9dac0" stroke="#33432b" stroke-width="4"/>
+          <rect x="45" y="58" width="10" height="17" rx="3" fill="#3d4d31"/><ellipse cx="50" cy="79" rx="22" ry="7" fill="#3b4930"/>
+          <path d="M30 27v24M40 25v31M50 24v34M60 25v31M70 27v24" stroke="#314127" opacity=".55"/>
+        </svg>`;
+      case "ribbed-green":
+        return `<svg ${common}>
+          <defs><linearGradient id="rib-${n}" x1="0" x2="1"><stop stop-color="#647650"/><stop offset=".5" stop-color="#b2bd8d"/><stop offset="1" stop-color="#526343"/></linearGradient></defs>
+          <path d="M29 20 Q25 52 34 78 Q50 86 66 78 Q75 52 71 20 Z" fill="url(#rib-${n})"/>
+          <ellipse cx="50" cy="20" rx="21" ry="7" fill="#e7e5cf" stroke="#506144" stroke-width="3"/>
+          <path d="M36 26l2 46M44 24l1 52M52 24v53M60 24l-1 50M68 26l-3 45" stroke="#4e6041" opacity=".5"/>
+        </svg>`;
+      case "lime-bowl":
+        return `<svg ${common}>
+          <defs><radialGradient id="lime-${n}"><stop stop-color="#9fc43d"/><stop offset="1" stop-color="#4f7414"/></radialGradient></defs>
+          <path d="M22 42 Q19 69 34 80 Q50 88 66 80 Q81 69 78 42 Z" fill="url(#lime-${n})"/>
+          <ellipse cx="50" cy="42" rx="28" ry="11" fill="#f0ead4" stroke="#57751c" stroke-width="3"/>
+          <g fill="#c4e877" opacity=".8"><circle cx="31" cy="59" r="2"/><circle cx="42" cy="72" r="1.7"/><circle cx="61" cy="63" r="2"/><circle cx="69" cy="73" r="1.6"/></g>
+        </svg>`;
+      case "floral-glass":
+        return `<svg ${common}>
+          <rect x="29" y="18" width="42" height="65" rx="11" fill="#f1efe6" stroke="#95a08d" stroke-width="2"/>
+          <ellipse cx="50" cy="20" rx="20" ry="7" fill="#fffdf5" stroke="#9aa28e" stroke-width="2"/>
+          <path d="M40 72 Q45 55 49 39 M58 72 Q54 56 53 43" stroke="#4e8a48" stroke-width="2.5" fill="none"/>
+          <g fill="#d896b8"><circle cx="39" cy="62" r="6"/><circle cx="62" cy="48" r="6"/></g>
+          <g fill="#f1c2d6"><circle cx="36" cy="59" r="3"/><circle cx="43" cy="65" r="3"/><circle cx="59" cy="45" r="3"/><circle cx="65" cy="51" r="3"/></g>
+        </svg>`;
+      case "teal-bowl":
+        return `<svg ${common}>
+          <defs><radialGradient id="teal-${n}"><stop stop-color="#52b3a0"/><stop offset="1" stop-color="#1f6d67"/></radialGradient></defs>
+          <path d="M22 42 Q19 69 34 80 Q50 88 66 80 Q81 69 78 42 Z" fill="url(#teal-${n})"/>
+          <ellipse cx="50" cy="42" rx="28" ry="11" fill="#efe9d6" stroke="#326e68" stroke-width="3"/>
+          <g fill="#a8e1d5" opacity=".85"><circle cx="31" cy="61" r="2"/><circle cx="46" cy="74" r="1.6"/><circle cx="62" cy="64" r="2"/><circle cx="69" cy="72" r="1.7"/></g>
+        </svg>`;
+      case "white-face":
+        return `<svg ${common}>
+          <path d="M26 20 Q18 28 23 43 L29 80 Q45 88 66 78 L77 35 Q78 23 67 20 Q57 25 48 20 Q36 25 26 20Z" fill="#f4f2ed" stroke="#c7c4bc" stroke-width="2"/>
+          <path d="M38 44 q6-4 12 0 M54 44 q6-4 11 0 M51 47 q-3 8 2 11 M42 66 q9 5 18 0" fill="none" stroke="#9f9b93" stroke-width="2" stroke-linecap="round"/>
+          <path d="M69 13 Q64 26 64 42" stroke="#d7d3cb" stroke-width="2"/>
+        </svg>`;
+      case "large-floral-bowl":
+        return `<svg ${common}>
+          <defs><linearGradient id="big-${n}" x1="0" x2="1"><stop stop-color="#32494d"/><stop offset=".5" stop-color="#6e8080"/><stop offset="1" stop-color="#283d42"/></linearGradient></defs>
+          <path d="M12 42 Q15 79 50 84 Q85 79 88 42 Z" fill="url(#big-${n})"/>
+          <ellipse cx="50" cy="42" rx="38" ry="15" fill="#f2edda" stroke="#354d52" stroke-width="4"/>
+          <g fill="#7ca56c"><circle cx="24" cy="61" r="2"/><circle cx="73" cy="66" r="2"/><circle cx="35" cy="74" r="2"/></g>
+          <g fill="#e8ede5"><circle cx="29" cy="58" r="2.5"/><circle cx="68" cy="60" r="2.5"/><circle cx="55" cy="76" r="2.5"/></g>
+        </svg>`;
+      case "aqua-green":
+        return `<svg ${common}>
+          <defs><linearGradient id="aqua-${n}" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#bcd96a"/><stop offset=".55" stop-color="#8bc555"/><stop offset="1" stop-color="#e6e7d5"/></linearGradient></defs>
+          <path d="M24 35 Q18 62 31 78 Q50 88 69 78 Q82 62 76 35 Z" fill="url(#aqua-${n})"/>
+          <ellipse cx="50" cy="35" rx="26" ry="10" fill="#f2edd9" stroke="#87b34f" stroke-width="3"/>
+          <path d="M61 73 h12" stroke="#607f37" stroke-width="2" opacity=".65"/>
+        </svg>`;
+      default:
+        return `<div class="vessel-fallback">${candle.slot}</div>`;
+    }
+  }
+
   function renderChallenge() {
     const selected = state.candle;
     const slots = cfg.candles.map(c => `
       <div class="slot ${c.id === selected.id ? "selected" : "muted"}">
-        <span>${c.slot}</span><small>${c.slotLabel}</small>
+        <span class="slot-number">${c.slot}</span>
+        ${renderVesselThumb(c)}
       </div>`).join("");
 
     shell(`
       <div class="content-wrap narrow">
         <p class="eyebrow">${state.persona.name} has chosen your challenge</p>
-        <h2>Find this candle below the iPad</h2>
+        <h2>Find candle ${selected.slot} below the iPad</h2>
         <div class="shelf-grid">${slots}</div>
-        <div class="selected-candle">${selected.slot}<strong>${selected.slotLabel}</strong></div>
+        <div class="selected-candle">
+          ${renderVesselThumb(selected, true)}
+          <strong>Candle ${selected.slot}</strong>
+        </div>
         <p class="lede">Pick it up. Take a good sniff.</p>
         <button class="primary" id="smelledButton">I’VE SMELLED IT</button>
       </div>`, "① Your vibe → ② Smell → ③ Guess");
