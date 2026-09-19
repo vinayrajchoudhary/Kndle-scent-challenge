@@ -39,16 +39,16 @@ h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2rem, 4vw,
 .persona-icon { font-size: 3rem; }
 .persona-card strong { font-size: 1.2rem; }
 .persona-card small { color: var(--muted); }
-.shelf-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px auto 16px; max-width: 590px; }
-.slot { position: relative; min-height: 104px; border: 1px solid var(--line); border-radius: 20px; display: grid; place-items: center; background: var(--paper); transition: .25s ease; overflow: hidden; }
-.slot-number { position: absolute; top: 8px; left: 10px; z-index: 2; width: 25px; height: 25px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,250,244,.93); border: 1px solid var(--line); font-size: .78rem; font-weight: 900; }
-.slot.muted { opacity: .38; filter: saturate(.65); }
-.slot.selected { opacity: 1; transform: scale(1.04); border: 2px solid var(--ink); box-shadow: var(--shadow); background: #fffdf8; }
-.vessel-svg { width: 74px; height: 74px; display: block; }
-.vessel-svg.large { width: 90px; height: 90px; }
-.vessel-fallback { font-size: 2rem; font-weight: 800; }
-.selected-candle { display: inline-flex; align-items: center; gap: 10px; margin: 4px 0 2px; padding: 4px 14px 4px 6px; border-radius: 18px; background: rgba(255,250,244,.65); }
+.shelf-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 22px auto; max-width: 590px; }
+.slot { min-height: 92px; border: 1px solid var(--line); border-radius: 20px; display: grid; place-items: center; align-content: center; gap: 3px; background: var(--paper); transition: .25s; }
+.slot-icon { font-size: 2.25rem; line-height: 1; }
+.slot small { color: var(--muted); font-weight: 700; }
+.slot.muted { opacity: .22; filter: grayscale(1); }
+.slot.selected { opacity: 1; transform: scale(1.07); border: 2px solid var(--ink); box-shadow: var(--shadow); }
+.selected-candle { display: inline-flex; align-items: center; gap: 12px; margin: 6px 0; }
+.selected-icon { font-size: 2.4rem; line-height: 1; }
 .selected-candle strong { font-size: 1rem; }
+
 .answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .answer-card { min-height: 120px; font-size: 1.25rem; font-weight: 800; }
 .result-card { width: min(100%, 700px); text-align: center; background: var(--paper); border: 1px solid var(--line); border-radius: 34px; padding: 40px; box-shadow: var(--shadow); }
@@ -80,7 +80,4 @@ h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2rem, 4vw,
   .persona-grid, .answer-grid { grid-template-columns: 1fr; }
   .persona-card { min-height: 145px; }
   .screen { padding: 22px 16px; }
-  .shelf-grid { gap: 7px; }
-  .slot { min-height: 88px; border-radius: 16px; }
-  .vessel-svg { width: 62px; height: 62px; }
 }
