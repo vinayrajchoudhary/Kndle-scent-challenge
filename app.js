@@ -12,6 +12,7 @@
     result: null,
     playerName: "",
     instagram: "",
+    instagramConsent: false,
     savedPlayId: null,
     adminUnlocked: false,
     resetTimer: null,
@@ -80,7 +81,7 @@
     clearInactivityTimer();
     Object.assign(state, {
       screen: "home", persona: null, candle: null, answer: null,
-      result: null, playerName: "", instagram: "", savedPlayId: null,
+      result: null, playerName: "", instagram: "", instagramConsent: false, savedPlayId: null,
       transitioning: false
     });
     render();
@@ -236,6 +237,7 @@
       createdAt: new Date().toISOString(),
       playerName: "",
       instagram: "",
+      instagramConsent: false,
       personaId: state.persona.id,
       personaName: state.persona.name,
       candleId: state.candle.id,
@@ -277,17 +279,23 @@
         <h2>Join today’s Scent Detectives</h2>
         <label class="field">Name / nickname<input id="playerName" autocomplete="off" maxlength="30" placeholder="Your name" /></label>
         <label class="field">Instagram <span>(optional)</span><input id="instagram" autocomplete="off" maxlength="40" placeholder="@handle" /></label>
+        <label class="consent-row">
+          <input id="instagramConsent" type="checkbox" />
+          <span><strong>Tag me in today’s KNDLÉ Scent Detectives Instagram post</strong><small>We’ll only tag your handle if you choose this.</small></span>
+        </label>
         <button class="primary" id="savePlayer">ADD ME</button>
         <button class="ghost" id="skipPlayer">Skip</button>
       </div>`, "Almost done", false);
     document.getElementById("savePlayer").onclick = async () => {
       state.playerName = document.getElementById("playerName").value.trim();
       state.instagram = document.getElementById("instagram").value.trim();
+      state.instagramConsent = !!document.getElementById("instagramConsent").checked;
       const plays = await db.getAllPlays();
       const play = plays.find(p => p.id === state.savedPlayId);
       if (play) {
         play.playerName = state.playerName;
         play.instagram = state.instagram;
+        play.instagramConsent = state.instagramConsent;
         await db.addPlay(play);
       }
       await finalizePlay();
@@ -302,8 +310,12 @@
     if (!play) return false;
     play.playerName = state.playerName || play.playerName || "";
     play.instagram = state.instagram || play.instagram || "";
+    play.instagramConsent = !!(state.instagramConsent || play.instagramConsent);
     await db.addPlay(play);
-    return cloud ? cloud.syncPlay(play) : false;
+
+    // Sync in the background: customer flow must never wait for network/Supabase.
+    if (cloud) cloud.syncPlay(play).catch(() => {});
+    return true;
   }
 
   async function renderFinal() {
