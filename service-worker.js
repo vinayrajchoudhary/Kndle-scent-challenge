@@ -1,4 +1,4 @@
-const CACHE = "kndle-scent-game-v9";
+const CACHE = "kndle-scent-game-v7";
 const ASSETS = [
   "./",
   "./index.html",
