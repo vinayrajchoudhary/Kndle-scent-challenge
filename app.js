@@ -129,14 +129,28 @@
       state.persona = cfg.personas.find(p => p.id === btn.dataset.id);
       const eligible = cfg.candles.filter(c => c.active && c.mappedPersonas.includes(state.persona.id));
       state.candle = eligible[Math.floor(Math.random() * eligible.length)] || cfg.candles.find(c => c.active);
+
+      let transitionPromise = null;
       try {
-        if (window.KNDLE_TRANSITION) await window.KNDLE_TRANSITION.play(state.persona);
+        if (window.KNDLE_TRANSITION) {
+          transitionPromise = window.KNDLE_TRANSITION.play(state.persona);
+        }
+
+        // Prepare the challenge underneath the transition overlay so its fade-out
+        // reveals the next screen directly, instead of briefly exposing personas.
+        state.screen = "challenge";
+        render();
+
+        if (transitionPromise) await transitionPromise;
       } catch (err) {
         console.warn("KNDLÉ transition skipped:", err);
+        if (state.screen !== "challenge") {
+          state.screen = "challenge";
+          render();
+        }
       } finally {
         state.transitioning = false;
       }
-      go("challenge");
     });
   }
 
