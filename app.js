@@ -48,7 +48,8 @@
     clearResetTimer();
     Object.assign(state, {
       screen: "home", persona: null, candle: null, answer: null,
-      result: null, playerName: "", instagram: "", savedPlayId: null
+      result: null, playerName: "", instagram: "", savedPlayId: null,
+      transitioning: false
     });
     render();
   }
@@ -130,6 +131,8 @@
       state.candle = eligible[Math.floor(Math.random() * eligible.length)] || cfg.candles.find(c => c.active);
       try {
         if (window.KNDLE_TRANSITION) await window.KNDLE_TRANSITION.play(state.persona);
+      } catch (err) {
+        console.warn("KNDLÉ transition skipped:", err);
       } finally {
         state.transitioning = false;
       }
