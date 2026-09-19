@@ -33,6 +33,36 @@
   };
 
 
+  const INACTIVITY_RESET_MS = 100000;
+  const INACTIVITY_EXCLUDED_SCREENS = new Set(["home", "final", "admin"]);
+  let inactivityTimer = null;
+
+  function clearInactivityTimer() {
+    if (inactivityTimer) clearTimeout(inactivityTimer);
+    inactivityTimer = null;
+  }
+
+  function inactivityResetDue() {
+    if (INACTIVITY_EXCLUDED_SCREENS.has(state.screen)) {
+      clearInactivityTimer();
+      return;
+    }
+
+    if (document.querySelector(".kt-overlay")) {
+      inactivityTimer = setTimeout(inactivityResetDue, 1000);
+      return;
+    }
+
+    resetGame();
+  }
+
+  function restartInactivityTimer() {
+    clearInactivityTimer();
+    if (INACTIVITY_EXCLUDED_SCREENS.has(state.screen)) return;
+    inactivityTimer = setTimeout(inactivityResetDue, INACTIVITY_RESET_MS);
+  }
+
+
   function clearResetTimer() {
     if (state.resetTimer) clearTimeout(state.resetTimer);
     state.resetTimer = null;
@@ -42,10 +72,12 @@
     clearResetTimer();
     state.screen = screen;
     render();
+    restartInactivityTimer();
   }
 
   function resetGame() {
     clearResetTimer();
+    clearInactivityTimer();
     Object.assign(state, {
       screen: "home", persona: null, candle: null, answer: null,
       result: null, playerName: "", instagram: "", savedPlayId: null,
@@ -140,6 +172,7 @@
         // reveals the next screen directly, instead of briefly exposing personas.
         state.screen = "challenge";
         render();
+        restartInactivityTimer();
 
         if (transitionPromise) await transitionPromise;
       } catch (err) {
@@ -304,6 +337,7 @@
       state.adminUnlocked = true;
     }
     state.screen = "admin";
+    clearInactivityTimer();
     render();
   }
 
@@ -388,7 +422,12 @@
     window.addEventListener("load", () => navigator.serviceWorker.register("service-worker.js").catch(() => {}));
   }
 
+  document.addEventListener("pointerdown", restartInactivityTimer, { capture: true, passive: true });
+  document.addEventListener("keydown", restartInactivityTimer, true);
+  document.addEventListener("input", restartInactivityTimer, true);
+
   window.addEventListener("online", () => cloud?.syncPending().catch(() => {}));
   cloud?.syncPending().catch(() => {});
   render();
+  restartInactivityTimer();
 })();
