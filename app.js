@@ -20,6 +20,18 @@
 
   const uid = () => `${Date.now()}-${Math.random().toString(16).slice(2)}`;
   const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);
+  const SLOT_CUES = {
+    "1": "✦",
+    "2": "☾",
+    "3": "◇",
+    "4": "☼",
+    "5": "✧",
+    "6": "◈",
+    "7": "⬡",
+    "8": "⟡",
+    "9": "✺"
+  };
+
 
   function clearResetTimer() {
     if (state.resetTimer) clearTimeout(state.resetTimer);
@@ -130,7 +142,7 @@
     const selected = state.candle;
     const slots = cfg.candles.map(c => `
       <div class="slot ${c.id === selected.id ? "selected" : "muted"}">
-        <span class="slot-icon">${c.icon || c.slot}</span>
+        <span class="slot-icon">${SLOT_CUES[c.slot] || c.slot}</span>
         <small>${c.slotLabel}</small>
       </div>`).join("");
 
@@ -140,7 +152,7 @@
         <h2>Find this candle below the iPad</h2>
         <div class="shelf-grid">${slots}</div>
         <div class="selected-candle">
-          <span class="selected-icon">${selected.icon || selected.slot}</span>
+          <span class="selected-icon">${SLOT_CUES[selected.slot] || selected.slot}</span>
           <strong>${selected.slotLabel}</strong>
         </div>
         <p class="lede">Pick it up. Take a good sniff.</p>
