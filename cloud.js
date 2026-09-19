@@ -46,7 +46,8 @@ window.KNDLE_CLOUD = (() => {
       correct: !!play.correct,
       reward: play.correct ? window.KNDLE_CONFIG.settings.correctReward : window.KNDLE_CONFIG.settings.wrongReward,
       nickname: play.playerName || null,
-      instagram: play.instagram || null
+      instagram: play.instagram || null,
+      instagram_consent: !!play.instagramConsent
     };
   }
 
@@ -128,5 +129,5 @@ window.KNDLE_CLOUD = (() => {
     }
   }
 
-  return { deviceId, syncPlay, syncPending, getLeaderboard, version: "6" };
+  return { deviceId, syncPlay, syncPending, getLeaderboard, version: "7" };
 })();
