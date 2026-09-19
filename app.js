@@ -14,7 +14,8 @@
     instagram: "",
     savedPlayId: null,
     adminUnlocked: false,
-    resetTimer: null
+    resetTimer: null,
+    transitioning: false
   };
 
   const uid = () => `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -109,10 +110,17 @@
         </div>
       </div>`, "① Your vibe → ② Smell → ③ Guess");
 
-    document.querySelectorAll(".persona-card").forEach(btn => btn.onclick = () => {
+    document.querySelectorAll(".persona-card").forEach(btn => btn.onclick = async () => {
+      if (state.transitioning) return;
+      state.transitioning = true;
       state.persona = cfg.personas.find(p => p.id === btn.dataset.id);
       const eligible = cfg.candles.filter(c => c.active && c.mappedPersonas.includes(state.persona.id));
       state.candle = eligible[Math.floor(Math.random() * eligible.length)] || cfg.candles.find(c => c.active);
+      try {
+        if (window.KNDLE_TRANSITION) await window.KNDLE_TRANSITION.play(state.persona);
+      } finally {
+        state.transitioning = false;
+      }
       go("challenge");
     });
   }
@@ -122,7 +130,7 @@
     const selected = state.candle;
     const slots = cfg.candles.map(c => `
       <div class="slot ${c.id === selected.id ? "selected" : "muted"}">
-        <span class="slot-icon">${c.icon}</span>
+        <span class="slot-icon">${c.icon || c.slot}</span>
         <small>${c.slotLabel}</small>
       </div>`).join("");
 
@@ -132,7 +140,7 @@
         <h2>Find this candle below the iPad</h2>
         <div class="shelf-grid">${slots}</div>
         <div class="selected-candle">
-          <span class="selected-icon">${selected.icon}</span>
+          <span class="selected-icon">${selected.icon || selected.slot}</span>
           <strong>${selected.slotLabel}</strong>
         </div>
         <p class="lede">Pick it up. Take a good sniff.</p>
